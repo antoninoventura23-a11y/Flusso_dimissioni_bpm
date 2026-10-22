@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliniClick BPMN - Processo Dimissione Unificato</title>
+    <title>CliniClick BPMN - Presentazione Progetto Dimissioni</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
@@ -43,13 +43,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="bg-gradient-to-tr from-sky-500 to-purple-600 p-2 rounded-xl shadow-lg">
-                    <i class="fa-solid fa-diagram-project text-white text-xl"></i>
+                    <i class="fa-solid fa-hospital-user text-white text-xl"></i>
                 </div>
                 <div>
                     <h1 class="font-bold text-base sm:text-lg leading-tight flex items-center gap-2">
-                        CliniClick BPM <span class="bg-sky-500/20 text-sky-400 text-xs px-2.5 py-0.5 rounded-full font-medium border border-sky-500/30">Workflow Dimissioni v8.0</span>
+                        CliniClick BPM <span class="bg-sky-500/20 text-sky-400 text-xs px-2.5 py-0.5 rounded-full font-medium border border-sky-500/30">Workflow Dimissioni Unificato</span>
                     </h1>
-                    <p class="text-xs text-slate-400">Dimissione Ordinaria vs Dimissione Protetta (Creazione Ricovero OdC)</p>
+                    <p class="text-xs text-slate-400">Specifica Tecnica e Funzionale per la Riunione Interna</p>
                 </div>
             </div>
             
@@ -72,15 +72,18 @@
                     <i class="fa-solid fa-diagram-next"></i> Flowchart BPMN 2.0
                 </button>
                 <button id="tab-swimlane-btn" onclick="switchView('swimlane')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-layer-group"></i> Swimlane Matrix (A Corsie)
+                    <i class="fa-solid fa-layer-group"></i> Swimlane (A Corsie)
+                </button>
+                <button id="tab-matrix-btn" onclick="switchView('matrix')" class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-table-list"></i> Matrice Comparativa
                 </button>
             </div>
 
             <div class="flex items-center gap-3 text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-                <span class="text-slate-400 font-medium">Ingressi UI CliniClick:</span>
-                <span class="flex items-center gap-1.5 text-sky-400 font-semibold"><i class="fa-solid fa-house-user"></i> Dimetti / ADT[cite: 1]</span>
+                <span class="text-slate-400 font-medium">Ingressi UI:</span>
+                <span class="flex items-center gap-1.5 text-sky-400 font-semibold"><i class="fa-solid fa-house-user"></i> Dimetti / ADT</span>
                 <span class="text-slate-600">|</span>
-                <span class="flex items-center gap-1.5 text-purple-400 font-semibold"><i class="fa-solid fa-truck-medical"></i> Dimissione Protetta[cite: 1]</span>
+                <span class="flex items-center gap-1.5 text-purple-400 font-semibold"><i class="fa-solid fa-truck-medical"></i> Dimissione Protetta</span>
             </div>
         </div>
 
@@ -89,9 +92,9 @@
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
                     <h2 class="text-base font-bold text-sky-400 flex items-center gap-2">
-                        <i class="fa-solid fa-diagram-next"></i> Schema Logico del Flusso BPMN
+                        <i class="fa-solid fa-diagram-next"></i> Diagramma di Flusso Integrato
                     </h2>
-                    <p class="text-xs text-slate-400">Percorso Ordinario (Doppia Firma/PCT/CDR) vs Percorso Protetto (UVM/COT/Creazione Ricovero OdC).</p>
+                    <p class="text-xs text-slate-400">Dimissione Ordinaria (Parziale, Avviso Verbale, 2ª Firma e CDR) vs Dimissione Protetta (UVM e Creazione Ricovero OdC).</p>
                 </div>
             </div>
 
@@ -99,8 +102,8 @@
             <div class="mermaid py-4 overflow-x-auto">
 flowchart TD
     subgraph INGRESSI ["Punti di Ingresso UI (CliniClick)"]
-        Start_Ord["Pulsante Dimetti / Gestione ADT"]
-        Start_Prot["Pulsante Dimissione Protetta (Frontespizio)"]
+        Start_Ord["Pulsante 'Dimetti' / Gestione ADT"]
+        Start_Prot["Pulsante 'Dimissione Protetta' (Frontespizio)"]
     end
 
     Start_Ord --> CheckCCE["Check Moduli CCE Obbligatori"]
@@ -121,7 +124,7 @@ flowchart TD
     ParzialeOrd --> ClickArchivia["Click Pulsante Archivia"]
     ClickArchivia --> CheckVerbale{"Controllo Presenza Verbale Operatorio"}
     
-    CheckVerbale -- Verbale OK / Assente --> ArchiviaOrd["Archiviazione Cartella Clinica"]
+    CheckVerbale -- Verbale OK / Non Operato --> ArchiviaOrd["Archiviazione Cartella Clinica"]
     CheckVerbale -- Verbale in Bozza / Mancante --> ChoiceVerb{"Scegli: Continuare comunque?"}
     
     ChoiceVerb -- Si --> ArchiviaOrd
@@ -132,7 +135,7 @@ flowchart TD
     Firma2Ord --> SyncCDR["Sync automatico Repository CDR Aziendale"]
     SyncCDR --> EndOrd(["Fine: Cartella Archiviata nel CDR"])
 
-    %% RAMO PROTETTO (Senza Firma, Senza PCT, Senza CDR)
+    %% RAMO PROTETTO
     Bivio -- Protetta --> UVM["Compilazione Scheda UVM / PAI"]
     UVM --> COT["External API: Inoltro Richiesta a COT Territoriale"]
     COT --> GwCOT{"Posto OdC Confermato?"}
@@ -163,9 +166,9 @@ flowchart TD
             <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
                 <div>
                     <h2 class="text-base font-bold text-purple-400 flex items-center gap-2">
-                        <i class="fa-solid fa-layer-group"></i> Sequenza Temporale e Interazioni (Swimlane)
+                        <i class="fa-solid fa-layer-group"></i> Sequenza Temporale e Attori
                     </h2>
-                    <p class="text-xs text-slate-400">Rappresentazione distinta dei due percorsi e della creazione del ricovero OdC.</p>
+                    <p class="text-xs text-slate-400">Ruoli e interazioni: Medico, Primario, CliniClick CCE, COT e CDR Repository.</p>
                 </div>
             </div>
 
@@ -180,14 +183,14 @@ sequenceDiagram
     participant CDR as CDR Repository Aziendale
 
     alt Innesco Ordinario
-        Medico->>CCE: Click su "Dimetti" o Gestione ADT[cite: 1]
+        Medico->>CCE: Click su "Dimetti" o Gestione ADT
     else Innesco Protetto
-        Medico->>CCE: Click su "Dimissione Protetta" (Frontespizio)[cite: 1]
+        Medico->>CCE: Click su "Dimissione Protetta" (Frontespizio)
     end
 
-    CCE->>CCE: Check Moduli CCE Obbligatori[cite: 1]
+    CCE->>CCE: Check Moduli CCE Obbligatori
     alt Moduli Incompleti
-        CCE-->>Medico: Blocco: Completa Moduli Mancanti[cite: 1]
+        CCE-->>Medico: Blocco: Completa Moduli Mancanti
     else Moduli OK
         alt Percorso Ordinario
             Medico->>CCE: Redazione Lettera di Dimissione Ospedaliera
@@ -199,7 +202,7 @@ sequenceDiagram
             CCE->>CCE: Controllo Presenza Verbale Operatorio
             alt Verbale Mancante / In Bozza
                 CCE-->>Medico: Warning: Verbale non validato. Scegli se proseguire
-                Note over Medico, CCE: L'utente conferma di continuare
+                Note over Medico, CCE: L'utente sceglie di continuare
             end
             CCE->>CCE: Archiviazione Cartella
             Primario->>CCE: 2a Firma Digitale (Archiviazione Primario)
@@ -209,25 +212,100 @@ sequenceDiagram
             CCE->>COT: Inoltro API Richiesta a COT Territoriale
             COT-->>CCE: Posto OdC Confermato
             CCE->>COT: Trasmissione Dati & Creazione Ricovero in Ospedale di Comunità
-            Note over CCE, CDR: NO Firma Digitale - NO PCT - NO Sync CDR[cite: 1]
+            Note over CCE, CDR: NO Firma Digitale - NO PCT - NO Sync CDR
         end
     end
             </div>
         </section>
 
-        <!-- REGOLE DI BUSINESS -->
-        <section class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 space-y-3">
-            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-shield-halved text-emerald-400"></i> Sintesi Regole di Business Aggiornate
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
-                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                    <span class="font-bold text-sky-400 block mb-1">🏠 Dimissione Ordinaria</span>
-                    Prevede Lettera, 1ª Firma Medico, PCT (Dimissione Parziale), Check Verbale Operatorio su Archivia, 2ª Firma Primario e Sync automatico con il CDR Aziendale[cite: 1].
+        <!-- VISTA 3: MATRICE COMPARATIVA (EXECUTIVE SUMMARY FOR MEETING) -->
+        <section id="view-matrix" class="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-800 space-y-4 hidden">
+            <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                <div>
+                    <h2 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-table-list"></i> Matrice Comparativa di Dettaglio Funzionale
+                    </h2>
+                    <p class="text-xs text-slate-400">Prospetto sintetico utile per la presentazione al team di progetto.</p>
                 </div>
-                <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
-                    <span class="font-bold text-purple-400 block mb-1">🏥 Dimissione Protetta (OdC)</span>
-                    Innescata dal pulsante "Dimissione Protetta" sul Frontespizio[cite: 1]. Richiede la Scheda UVM/PAI e l'interfacciamento con la COT. **Non prevede Firma Digitale, PCT né Archiviazione CDR**[cite: 1]; il flusso si conclude con la creazione del ricovero in OdC.
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-300 border-b border-slate-800 font-bold uppercase">
+                            <th class="p-3">Fase / Funzionalità</th>
+                            <th class="p-3 text-sky-400">🏠 Dimissione Ordinaria</th>
+                            <th class="p-3 text-purple-400">🏥 Dimissione Protetta (OdC)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Punto di Avvio UI</td>
+                            <td class="p-3">Pulsante "Dimetti" (Frontespizio) o Menu "Gestione ADT"</td>
+                            <td class="p-3">Pulsante dedicato "Dimissione Protetta" (Frontespizio)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Check Moduli CCE</td>
+                            <td class="p-3"><span class="bg-red-950 text-red-300 border border-red-800 px-2 py-0.5 rounded font-mono">BLOCCANTE</span> (Deve essere tutto completo)</td>
+                            <td class="p-3"><span class="bg-red-950 text-red-300 border border-red-800 px-2 py-0.5 rounded font-mono">BLOCCANTE</span> (Deve essere tutto completo)</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Documentazione Clinica</td>
+                            <td class="p-3">Lettera di Dimissione Ospedaliera + Primo Ciclo Terapeutico (PCT)</td>
+                            <td class="p-3">Scheda UVM / PAI + Valutazione COT</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Gestione Firme Digitale</td>
+                            <td class="p-3 font-semibold text-sky-300">Doppia Firma (1a Firma Medico + 2a Firma Primario su Archiviazione)</td>
+                            <td class="p-3 text-slate-500 italic">Nessuna Firma Digitale richiesta nel percorso</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Controllo Verbale Operatorio</td>
+                            <td class="p-3"><span class="bg-amber-950 text-amber-300 border border-amber-800 px-2 py-0.5 rounded font-mono">WARNING NON-BLOCCANTE</span> (Al click su Archivia con opzione di scelta)</td>
+                            <td class="p-3 text-slate-500 italic">Non previsto nel ramo protetto</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Primo Ciclo Terapeutico (PCT)</td>
+                            <td class="p-3 text-emerald-400 font-semibold"><i class="fa-solid fa-check mr-1"></i> Presente (Conclude la Dimissione Parziale)</td>
+                            <td class="p-3 text-slate-500 italic">Non presente</td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30">
+                            <td class="p-3 font-semibold text-white">Destinazione e Chiusura</td>
+                            <td class="p-3">Archiviazione Cartella e <strong>Sync con CDR Aziendale</strong></td>
+                            <td class="p-3 text-purple-300 font-semibold">Trasmissione dati e <strong>Creazione Ricovero in OdC</strong> (NO CDR)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SIMULATORE INTERATTIVO INTERFACCIA CLINICLICK -->
+        <section class="bg-slate-900 rounded-2xl p-6 shadow-2xl border border-slate-800 space-y-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
+                <i class="fa-solid fa-laptop-medical text-sky-400"></i> Simulatore Interattivo Pulsantiera CliniClick
+            </h3>
+            
+            <p class="text-xs text-slate-400">Fai clic sui pulsanti per simulare i messaggi e il comportamento del software di cartella clinica durante la riunione:</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <span class="text-xs font-bold text-sky-400 block">Pulsantiera Frontespizio / ADT</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="simulaAzione('dimetti')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-house-user"></i> Pulsante "Dimetti"
+                        </button>
+                        <button onclick="simulaAzione('protetta')" class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-truck-medical"></i> Pulsante "Dimissione Protetta"
+                        </button>
+                        <button onclick="simulaAzione('archivia')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 shadow">
+                            <i class="fa-solid fa-box-archive"></i> Pulsante "Archivia"
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BOX RISPOSTA SIMULATORE -->
+                <div id="sim-response-box" class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex items-center justify-center text-xs text-slate-400 italic text-center min-h-[90px]">
+                    Seleziona un'azione della pulsantiera sopra per vedere l'esito...
                 </div>
             </div>
         </section>
@@ -251,10 +329,8 @@ sequenceDiagram
                   id="Definitions_CliniClick_Master"
                   targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="Process_Dimissione_Unificata" name="Processo Dimissione CliniClick" isExecutable="true">
-    
     <bpmn:startEvent id="Start_Ord" name="Pulsante Dimetti / Gestione ADT"/>
     <bpmn:startEvent id="Start_Prot" name="Pulsante Dimissione Protetta (Frontespizio)"/>
-    
     <bpmn:serviceTask id="Task_CheckModuli" name="Validazione Moduli CCE (Bloccante)"/>
     
     <!-- Ramo Ordinario -->
@@ -294,19 +370,56 @@ sequenceDiagram
         function switchView(viewName) {
             const flowchartBtn = document.getElementById('tab-flowchart-btn');
             const swimlaneBtn = document.getElementById('tab-swimlane-btn');
+            const matrixBtn = document.getElementById('tab-matrix-btn');
+            
             const flowchartSec = document.getElementById('view-flowchart');
             const swimlaneSec = document.getElementById('view-swimlane');
+            const matrixSec = document.getElementById('view-matrix');
+
+            [flowchartSec, swimlaneSec, matrixSec].forEach(s => s.classList.add('hidden'));
+            [flowchartBtn, swimlaneBtn, matrixBtn].forEach(b => b.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition text-slate-400 hover:text-white");
 
             if (viewName === 'flowchart') {
                 flowchartSec.classList.remove('hidden');
-                swimlaneSec.classList.add('hidden');
                 flowchartBtn.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition bg-sky-600 text-white shadow";
-                swimlaneBtn.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition text-slate-400 hover:text-white";
-            } else {
+            } else if (viewName === 'swimlane') {
                 swimlaneSec.classList.remove('hidden');
-                flowchartSec.classList.add('hidden');
                 swimlaneBtn.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition bg-purple-600 text-white shadow";
-                flowchartBtn.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition text-slate-400 hover:text-white";
+            } else {
+                matrixSec.classList.remove('hidden');
+                matrixBtn.className = "flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold rounded-md transition bg-emerald-600 text-white shadow";
+            }
+        }
+
+        function simulaAzione(tipo) {
+            const box = document.getElementById('sim-response-box');
+            if (tipo === 'dimetti') {
+                box.innerHTML = `
+                    <div class="text-left w-full space-y-1">
+                        <span class="font-bold text-sky-400 block"><i class="fa-solid fa-play mr-1"></i> Avvio Dimissione Ordinaria</span>
+                        <p class="text-slate-300">1. Verificato stato moduli CCE (OK).</p>
+                        <p class="text-slate-300">2. Richiesta redazione Lettera + 1ª Firma Digitale Medico + PCT (Dimissione Parziale).</p>
+                    </div>
+                `;
+            } else if (tipo === 'protetta') {
+                box.innerHTML = `
+                    <div class="text-left w-full space-y-1">
+                        <span class="font-bold text-purple-400 block"><i class="fa-solid fa-play mr-1"></i> Avvio Dimissione Protetta</span>
+                        <p class="text-slate-300">1. Apertura Scheda UVM / PAI ed invio richiesta telematica a COT.</p>
+                        <p class="text-slate-300">2. Alla conferma del posto, generazione automatica e <strong>Creazione Ricovero presso l'OdC</strong> (No Firma, No PCT, No CDR).</p>
+                    </div>
+                `;
+            } else if (tipo === 'archivia') {
+                box.innerHTML = `
+                    <div class="text-left w-full space-y-2 bg-amber-950/40 p-3 rounded-lg border border-amber-800/60">
+                        <span class="font-bold text-amber-300 block flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation"></i> Controllo Verbale Operatorio al click su Archivia</span>
+                        <p class="text-slate-200">"Attenzione: il Verbale Operatorio risulta in bozza o non validato. Vuoi proseguire comunque con l'archiviazione?"</p>
+                        <div class="flex gap-2 pt-1">
+                            <span class="bg-amber-600 text-slate-950 font-bold px-2 py-0.5 rounded text-[10px]">SÌ: Procedi alla 2ª Firma Primario & Sync CDR</span>
+                            <span class="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px]">NO: Annulla</span>
+                        </div>
+                    </div>
+                `;
             }
         }
 
